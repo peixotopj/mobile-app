@@ -1,0 +1,71 @@
+name: Mobile CI/CD
+
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+
+permissions:
+  contents: read
+
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+
+      - name: Executar testes
+        run: npm test
+
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+
+
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+
+      - name: Gerar pacote
+        run: |
+          mkdir dist
+          cp index.html style.css app.js dist/
+          cp manifest.json sw.js dist/
+          cd dist
+          zip -r ../mobile-app.zip .
+
+
+      - name: Publicar artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-app-release
+          path: mobile-app.zip
+          if-no-files-found: error
+
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+
+    steps:
+      - name: Validar release
+        run: |
+          echo "Testes aprovados!"
+          echo "Pacote gerado!"
+          echo "Release pronto para distribuicao!"
