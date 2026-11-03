@@ -1,0 +1,10 @@
+{
+    "name": "Meu App Mobile",
+    "short_name": "MeuApp",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#f1f5f9",
+    "theme_color": "#2563eb",
+    "icons": []
+  }
+  
